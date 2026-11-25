@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 120" fill="none" aria-hidden="true">
+  <!-- rattle -->
+  <g transform="translate(20,20)">
+    <circle cx="40" cy="35" r="28" fill="#D4C4B0" stroke="#A89078" stroke-width="2"/>
+    <circle cx="40" cy="35" r="16" fill="#EDE4D8"/>
+    <circle cx="32" cy="28" r="4" fill="#A8B5A0"/>
+    <circle cx="48" cy="30" r="3.5" fill="#B7C4C9"/>
+    <circle cx="40" cy="42" r="3" fill="#C9B8A8"/>
+    <rect x="36" y="60" width="8" height="36" rx="4" fill="#A89078"/>
+    <ellipse cx="40" cy="98" rx="10" ry="6" fill="#8B7355"/>
+  </g>
+  <!-- pacifier -->
+  <g transform="translate(130,25)">
+    <ellipse cx="40" cy="55" rx="28" ry="18" fill="#C9B8A8"/>
+    <circle cx="40" cy="35" r="22" fill="#E8D9C8" stroke="#A89078" stroke-width="2"/>
+    <circle cx="40" cy="35" r="10" fill="#B7C4C9"/>
+    <rect x="36" y="55" width="8" height="18" rx="3" fill="#A89078"/>
+    <ellipse cx="40" cy="75" rx="12" ry="7" fill="#8B7355"/>
+  </g>
+  <!-- bottle -->
+  <g transform="translate(240,10)">
+    <rect x="28" y="8" width="24" height="14" rx="3" fill="#A89078"/>
+    <rect x="22" y="22" width="36" height="12" rx="4" fill="#C9B8A8"/>
+    <path d="M18 34 H62 L56 100 H24 Z" fill="#EDE4D8" stroke="#A89078" stroke-width="2"/>
+    <path d="M24 55 H56 L54 78 H26 Z" fill="#B7C4C9" opacity="0.55"/>
+    <line x1="26" y1="42" x2="54" y2="42" stroke="#C9B8A8" stroke-width="2"/>
+  </g>
+  <!-- onesie -->
+  <g transform="translate(350,15)">
+    <path d="M40 20 C28 20 18 28 16 40 L8 48 L18 58 L22 50 L22 95 Q22 105 32 105 L48 105 Q58 105 58 95 L58 50 L62 58 L72 48 L64 40 C62 28 52 20 40 20Z" fill="#D5CDC2" stroke="#A89078" stroke-width="2"/>
+    <circle cx="32" cy="55" r="3" fill="#A8B5A0"/>
+    <circle cx="40" cy="55" r="3" fill="#A8B5A0"/>
+    <circle cx="48" cy="55" r="3" fill="#A8B5A0"/>
+    <path d="M28 20 Q40 8 52 20" stroke="#A89078" stroke-width="2" fill="none"/>
+  </g>
+</svg>

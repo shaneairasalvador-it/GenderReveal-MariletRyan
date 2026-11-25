@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+  <!-- cloud -->
+  <g id="cloud">
+    <ellipse cx="70" cy="80" rx="28" ry="18" fill="#FFF8F0"/>
+    <ellipse cx="95" cy="72" rx="24" ry="20" fill="#FFF8F0"/>
+    <ellipse cx="118" cy="82" rx="26" ry="16" fill="#FFF8F0"/>
+    <ellipse cx="95" cy="90" rx="40" ry="16" fill="#FFF8F0"/>
+  </g>
+  <!-- star -->
+  <g id="star">
+    <path d="M40 20 L44 32 L56 32 L46 40 L50 52 L40 44 L30 52 L34 40 L24 32 L36 32 Z" fill="#E8C9A0"/>
+  </g>
+  <!-- heart blush -->
+  <g id="heart">
+    <path d="M20 28 C20 20 30 16 36 24 C42 16 52 20 52 28 C52 40 36 52 36 52 C36 52 20 40 20 28Z" fill="#E8A0A8"/>
+  </g>
+  <!-- balloon -->
+  <g id="balloon">
+    <ellipse cx="100" cy="55" rx="22" ry="28" fill="#D3E4EF"/>
+    <path d="M100 83 L96 92 L104 92 Z" fill="#A89078"/>
+    <path d="M100 92 Q98 110 102 128" stroke="#A89078" stroke-width="2" fill="none"/>
+  </g>
+  <!-- balloon blush -->
+  <g id="balloon-pink">
+    <ellipse cx="100" cy="55" rx="22" ry="28" fill="#F0D4DB"/>
+    <path d="M100 83 L96 92 L104 92 Z" fill="#A89078"/>
+    <path d="M100 92 Q102 110 98 128" stroke="#A89078" stroke-width="2" fill="none"/>
+  </g>
+</svg>

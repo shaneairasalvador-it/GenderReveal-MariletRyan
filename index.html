@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gender Reveal</title>
+  <meta name="description" content="Join us for a cozy gender reveal — McDonald's Marcos Highway, December 13, 2026." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="invite-locked">
+  <div id="envelopeGate" class="envelope-gate" role="dialog" aria-modal="true" aria-labelledby="envelopeTitle">
+    <div class="envelope-sparkles" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <button type="button" class="envelope-btn" id="openInvite" aria-label="Open the invitation">
+      <div class="envelope" id="envelope">
+        <div class="envelope-letter">
+          <img src="assets/water-bear-moon.jpg" alt="" class="letter-bear" />
+          <p class="letter-lead">Please join us for a</p>
+          <p class="letter-brand">Gender Reveal</p>
+        </div>
+        <div class="envelope-front">
+          <div class="envelope-pattern" aria-hidden="true"></div>
+          <div class="envelope-shine" aria-hidden="true"></div>
+        </div>
+        <div class="envelope-flap">
+          <div class="envelope-flap-inner">
+            <div class="envelope-shine envelope-shine-flap" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="envelope-seal">
+          <img src="assets/water-bear-blanket.jpg" alt="" />
+          <span class="seal-gloss" aria-hidden="true"></span>
+        </div>
+        <div class="envelope-reflection" aria-hidden="true"></div>
+      </div>
+      <p id="envelopeTitle" class="envelope-hint">You have an invitation</p>
+      <p class="envelope-tap"><span class="tap-pulse"></span>Tap the envelope to open</p>
+    </button>
+  </div>
+
+  <div class="invite-content" id="inviteContent">
+  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="floating-decor" aria-hidden="true">
+    <span class="float f1"></span>
+    <span class="float f2"></span>
+    <span class="float f3"></span>
+    <span class="float f4"></span>
+    <img class="float-art fa1" src="assets/decor.svg#svgView(viewBox(40,50,120,70))" alt="" />
+    <svg class="float-art fa2" viewBox="0 0 56 52" aria-hidden="true"><path d="M8 22 C8 12 20 8 28 18 C36 8 48 12 48 22 C48 36 28 48 28 48 C28 48 8 36 8 22Z" fill="#E8A0A8" opacity="0.55"/></svg>
+    <svg class="float-art fa3" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4 L23 16 L36 16 L25 24 L29 36 L20 28 L11 36 L15 24 L4 16 L17 16 Z" fill="#E8C9A0" opacity="0.7"/></svg>
+    <svg class="float-art fa4" viewBox="0 0 48 90" aria-hidden="true"><ellipse cx="24" cy="28" rx="18" ry="24" fill="#D3E4EF"/><path d="M24 52 L20 60 L28 60 Z" fill="#A89078"/><path d="M24 60 Q22 74 26 88" stroke="#A89078" stroke-width="2" fill="none"/></svg>
+    <svg class="float-art fa5" viewBox="0 0 48 90" aria-hidden="true"><ellipse cx="24" cy="28" rx="18" ry="24" fill="#F0D4DB"/><path d="M24 52 L20 60 L28 60 Z" fill="#A89078"/><path d="M24 60 Q26 74 22 88" stroke="#A89078" stroke-width="2" fill="none"/></svg>
+    <svg class="float-art fa6" viewBox="0 0 80 40" aria-hidden="true"><ellipse cx="28" cy="22" rx="16" ry="10" fill="#FFF8F0" opacity="0.85"/><ellipse cx="42" cy="18" rx="14" ry="12" fill="#FFF8F0" opacity="0.85"/><ellipse cx="54" cy="24" rx="14" ry="9" fill="#FFF8F0" opacity="0.85"/><ellipse cx="40" cy="28" rx="22" ry="9" fill="#FFF8F0" opacity="0.85"/></svg>
+    <svg class="float-art fa7" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4 L23 16 L36 16 L25 24 L29 36 L20 28 L11 36 L15 24 L4 16 L17 16 Z" fill="#B7C4C9" opacity="0.65"/></svg>
+  </div>
+
+  <header class="site-header">
+    <a class="logo" href="#top">
+      <img src="assets/water-bear-blanket.jpg" alt="" width="44" height="44" class="logo-bear" />
+      <span>Gender Reveal</span>
+    </a>
+    <nav class="nav">
+      <a href="#details">Details</a>
+      <a href="#ultrasound">Ultrasound</a>
+      <a href="#gifts">Gifts</a>
+      <a href="#rsvp">RSVP</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <h1 class="hero-title">
+          <span class="hero-lead">Please join us for a</span>
+          <span class="hero-brand">Gender Reveal</span>
+        </h1>
+        <p class="lede">A cozy afternoon to find out if baby is a boy or a girl.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#rsvp">RSVP now</a>
+          <a class="btn btn-ghost" href="#details">Event details</a>
+        </div>
+        <p class="hero-meta">December 13, 2026 · 1:00–2:30 PM</p>
+      </div>
+      <div class="hero-art">
+        <img src="assets/water-nursery-hero.jpg" alt="Watercolor nursery bears and balloon" class="bear-illustration" />
+      </div>
+    </section>
+
+    <section id="details" class="section details">
+      <div class="section-head">
+        <div class="motif-row" aria-hidden="true">
+          <svg viewBox="0 0 48 90"><ellipse cx="24" cy="28" rx="18" ry="24" fill="#F0D4DB"/><path d="M24 52 L20 60 L28 60 Z" fill="#A89078"/><path d="M24 60 Q26 74 22 80" stroke="#A89078" stroke-width="2" fill="none"/></svg>
+          <svg viewBox="0 0 40 40"><path d="M20 4 L23 16 L36 16 L25 24 L29 36 L20 28 L11 36 L15 24 L4 16 L17 16 Z" fill="#E8C9A0"/></svg>
+          <img src="assets/water-bear-moon.jpg" alt="" class="motif-bear" />
+          <svg viewBox="0 0 40 40"><path d="M20 4 L23 16 L36 16 L25 24 L29 36 L20 28 L11 36 L15 24 L4 16 L17 16 Z" fill="#B7C4C9"/></svg>
+          <svg viewBox="0 0 48 90"><ellipse cx="24" cy="28" rx="18" ry="24" fill="#D3E4EF"/><path d="M24 52 L20 60 L28 60 Z" fill="#A89078"/><path d="M24 60 Q22 74 26 80" stroke="#A89078" stroke-width="2" fill="none"/></svg>
+        </div>
+        <h2>When &amp; Where</h2>
+        <p>Come hungry, come curious, and wear your team colors.</p>
+      </div>
+      <div class="detail-grid">
+        <article class="detail-item reveal">
+          <h3>Location</h3>
+          <p>McDonald's Marcos Highway</p>
+        </article>
+        <article class="detail-item reveal">
+          <h3>Date</h3>
+          <p>December 13, 2026</p>
+        </article>
+        <article class="detail-item reveal">
+          <h3>Time</h3>
+          <p>1:00 PM – 2:30 PM</p>
+        </article>
+        <article class="detail-item reveal dress-code">
+          <h3>Dress Code</h3>
+          <p>
+            <span class="chip girl">Pink for girl</span>
+            <span class="chip boy">Blue for boy</span>
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="ultrasound" class="section ultrasound">
+      <div class="section-head">
+        <h2>First Peek</h2>
+        <p>A sweet first look at baby — add the ultrasound photo here.</p>
+      </div>
+      <div class="ultra-frame reveal">
+        <label class="ultra-drop" id="ultraDrop" for="ultraInput">
+          <input type="file" id="ultraInput" accept="image/*" hidden />
+          <div class="ultra-empty" id="ultraEmpty">
+            <img src="assets/water-bear-moon.jpg" alt="" width="72" height="72" class="ultra-bear" />
+            <strong>Add ultrasound picture</strong>
+            <span>Tap or click to upload a photo</span>
+          </div>
+          <img id="ultraPreview" class="ultra-preview" alt="Ultrasound preview" hidden />
+        </label>
+        <button type="button" class="btn btn-ghost ultra-clear" id="ultraClear" hidden>Remove photo</button>
+      </div>
+    </section>
+
+    <section id="gifts" class="section gifts">
+      <div class="section-head">
+        <h2>Gift Ideas</h2>
+        <p>No pressure — pick anything that feels useful from the list below.</p>
+      </div>
+
+      <div class="gift-categories">
+        <article class="gift-category reveal">
+          <div class="gift-heading">
+            <span class="gift-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><rect x="10" y="14" width="28" height="26" rx="6" fill="#D4C4B0" stroke="#8B7355" stroke-width="2"/><path d="M10 22h28" stroke="#8B7355" stroke-width="2"/><path d="M18 14c0-4 4-7 6-7s6 3 6 7" stroke="#8B7355" stroke-width="2" fill="none"/><circle cx="24" cy="30" r="4" fill="#A89078"/></svg>
+            </span>
+            <h3>Diapering &amp; Organization</h3>
+          </div>
+          <ul>
+            <li>Diapers in larger sizes (Size 1, 2, or 3 instead of only Newborn, which babies outgrow quickly)</li>
+            <li>Fragrance-free baby wipes (bulk packs)</li>
+            <li>Portable changing pads (foldable and wipeable for on-the-go diaper changes)</li>
+            <li>Diaper caddies (for organizing wipes, creams, and diapers around the house)</li>
+            <li>Diaper bags (backpacks or totes with insulated bottle pockets)</li>
+            <li>Diaper rash cream</li>
+          </ul>
+        </article>
+
+        <article class="gift-category reveal">
+          <div class="gift-heading">
+            <span class="gift-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><rect x="18" y="4" width="12" height="8" rx="2" fill="#A89078"/><rect x="14" y="12" width="20" height="8" rx="3" fill="#C9B8A8"/><path d="M12 20h24l-3 22H15L12 20z" fill="#EDE4D8" stroke="#8B7355" stroke-width="2"/><path d="M16 28h16v8H16z" fill="#B7C4C9" opacity="0.7"/></svg>
+            </span>
+            <h3>Feeding &amp; Burping</h3>
+          </div>
+          <ul>
+            <li>Muslin burp cloths (absorbent and soft for frequent spit-ups)</li>
+            <li>Silicone bibs (with food-catching pockets for starting solids)</li>
+            <li>Bottle warmers</li>
+            <li>Bottle sterilizers (electric steam or UV sterilizers)</li>
+            <li>Bottle drying racks and brush sets</li>
+            <li>Silicone food feeders (for introducing fresh fruits and soft foods safely)</li>
+            <li>Baby spoons and suction bowls</li>
+          </ul>
+        </article>
+
+        <article class="gift-category reveal">
+          <div class="gift-heading">
+            <span class="gift-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><path d="M8 30c0-10 7-18 16-18s16 8 16 18v6H8v-6z" fill="#D5CDC2" stroke="#8B7355" stroke-width="2"/><path d="M14 18c2-6 6-10 10-10s8 4 10 10" stroke="#8B7355" stroke-width="2" fill="none"/><circle cx="34" cy="12" r="5" fill="#F0D2AE" stroke="#8B7355" stroke-width="1.5"/><path d="M12 36h24" stroke="#A89078" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            <h3>Sleep &amp; Comfort</h3>
+          </div>
+          <ul>
+            <li>Wearable blankets / sleep sacks (safer than loose blankets in the crib)</li>
+            <li>Breathable muslin swaddles (multi-use for swaddling, nursing covers, or stroller shade)</li>
+            <li>White noise machines</li>
+            <li>Dim night lights (for middle-of-the-night feedings and diaper changes)</li>
+            <li>Fitted crib sheets (extra sets for quick middle-of-the-night changes)</li>
+          </ul>
+        </article>
+
+        <article class="gift-category reveal">
+          <div class="gift-heading">
+            <span class="gift-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none"><path d="M12 18c0-6 5-10 12-10s12 4 12 10v18c0 4-4 8-12 8s-12-4-12-8V18z" fill="#C9B8A8" stroke="#8B7355" stroke-width="2"/><circle cx="24" cy="14" r="8" fill="#D4C4B0" stroke="#8B7355" stroke-width="2"/><path d="M16 28h16M16 34h12" stroke="#A89078" stroke-width="2" stroke-linecap="round"/><path d="M8 22c2 2 4 2 6 0M34 22c2 2 4 2 6 0" stroke="#B7C4C9" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            <h3>Bath &amp; Clothing</h3>
+          </div>
+          <ul>
+            <li>Hooded bath towels</li>
+            <li>Soft baby washcloths</li>
+            <li>Gentle, tear-free baby wash and lotion</li>
+            <li>Two-way zip sleepers / footie pajamas (for easier midnight diaper changes without fully undressing the baby)</li>
+            <li>Baby socks and mittens</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="rsvp" class="section rsvp">
+      <div class="section-head">
+        <h2>RSVP</h2>
+        <p>Let us know if you can celebrate with us.</p>
+      </div>
+
+      <div class="rsvp-board reveal">
+        <form class="rsvp-form" id="rsvpForm">
+          <label for="guestName">Your name</label>
+          <input
+            type="text"
+            id="guestName"
+            name="guestName"
+            maxlength="40"
+            placeholder="e.g Marilet"
+            autocomplete="name"
+            required
+          />
+
+          <fieldset class="rsvp-choices">
+            <legend>Will you be there?</legend>
+            <label class="choice">
+              <input type="radio" name="attendance" value="yes" required />
+              <span>Yes, I'll be there</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="attendance" value="no" />
+              <span>Sorry, can't make it</span>
+            </label>
+          </fieldset>
+
+          <button type="submit" class="btn btn-primary rsvp-submit" id="rsvpSubmit">
+            Send RSVP
+          </button>
+          <p class="rsvp-status" id="rsvpStatus" aria-live="polite"></p>
+        </form>
+
+        <div class="rsvp-summary" id="rsvpSummary" hidden>
+          <p class="rsvp-count">
+            <strong id="yesCount">0</strong> coming ·
+            <strong id="noCount">0</strong> can't make it
+          </p>
+          <ul class="rsvp-list" id="rsvpList" aria-label="RSVP list"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <img src="assets/water-bear-blanket.jpg" alt="" width="64" height="64" class="footer-bear" />
+    <p>See you at Marcos Highway · Dec 13, 2026</p>
+    <p class="footer-note">Can't wait to meet baby.</p>
+  </footer>
+  </div>
+
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+  <script src="js/app.js"></script>
+</body>
+</html>
