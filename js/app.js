@@ -1,8 +1,13 @@
 (() => {
   "use strict";
 
-  const RSVP_KEY = "little-bear-rsvp-v1";
-  const MY_RSVP_KEY = "little-bear-my-rsvp-v1";
+  const API = {
+    poll: "/api/poll",
+    rsvps: "/api/rsvps",
+  };
+  const MY_RSVP_KEY = "gender-reveal-my-rsvp-v2";
+  const RSVP_DEVICE_KEY = "gender-reveal-rsvp-device-v2";
+  const POLL_VOTER_KEY = "gender-reveal-poll-voter-v2";
   const ULTRA_KEY = "little-bear-ultrasound-v1";
 
   const els = {
@@ -22,7 +27,50 @@
     gate: document.getElementById("envelopeGate"),
     openBtn: document.getElementById("openInvite"),
     envelope: document.getElementById("envelope"),
+    voteBoy: document.getElementById("voteBoy"),
+    voteGirl: document.getElementById("voteGirl"),
+    countBoy: document.getElementById("countBoy"),
+    countGirl: document.getElementById("countGirl"),
+    barBoy: document.getElementById("barBoy"),
+    barGirl: document.getElementById("barGirl"),
+    pollTotal: document.getElementById("pollTotal"),
+    pollStatus: document.getElementById("pollStatus"),
   };
+
+  function makeId(prefix) {
+    if (typeof crypto !== "undefined" && crypto.randomUUID) {
+      return `${prefix}-${crypto.randomUUID()}`;
+    }
+    return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  }
+
+  function getOrCreateId(key, prefix) {
+    let id = localStorage.getItem(key);
+    if (!id) {
+      id = makeId(prefix);
+      localStorage.setItem(key, id);
+    }
+    return id;
+  }
+
+  async function apiGet(url) {
+    const response = await fetch(`${url}?t=${Date.now()}`, { cache: "no-store" });
+    if (!response.ok) throw new Error(`GET ${url} failed`);
+    return response.json();
+  }
+
+  async function apiPost(url, body) {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data.error || `POST ${url} failed`);
+    }
+    return data;
+  }
 
   /* ---------- Envelope open ---------- */
   let opening = false;
@@ -60,30 +108,9 @@
     });
   }
 
+  /* ---------- RSVP (SQLite via API) ---------- */
   /** @type {Array<{name: string, attendance: "yes" | "no", at: number}>} */
-  let rsvps = loadRsvps();
-
-  function loadRsvps() {
-    try {
-      const raw = localStorage.getItem(RSVP_KEY);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed.slice(-60) : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function saveRsvps() {
-    localStorage.setItem(RSVP_KEY, JSON.stringify(rsvps));
-    try {
-      const channel = new BroadcastChannel("little-bear-rsvp");
-      channel.postMessage({ type: "sync", rsvps });
-      channel.close();
-    } catch {
-      /* unsupported */
-    }
-  }
+  let rsvps = [];
 
   function getMyRsvp() {
     return localStorage.getItem(MY_RSVP_KEY);
@@ -94,6 +121,8 @@
   }
 
   function renderRsvp() {
+    if (!els.yesCount || !els.noCount) return;
+
     const yes = rsvps.filter((r) => r.attendance === "yes").length;
     const no = rsvps.filter((r) => r.attendance === "no").length;
 
@@ -126,7 +155,14 @@
     }
   }
 
-  els.form.addEventListener("submit", (event) => {
+  async function refreshRsvps() {
+    const data = await apiGet(API.rsvps);
+    rsvps = Array.isArray(data.rsvps) ? data.rsvps : [];
+    renderRsvp();
+    return data;
+  }
+
+  els.form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (getMyRsvp()) {
       els.status.textContent = "You already sent an RSVP on this device.";
@@ -144,16 +180,22 @@
     }
 
     const attendance = /** @type {"yes" | "no"} */ (attendanceInput.value);
+    els.submit.disabled = true;
+    els.status.textContent = "Saving…";
 
-    rsvps.push({ name, attendance, at: Date.now() });
-    if (rsvps.length > 60) rsvps = rsvps.slice(-60);
-
-    setMyRsvp(name);
-    saveRsvps();
-    renderRsvp();
-
-    if (attendance === "yes") {
-      burstConfetti();
+    try {
+      const data = await apiPost(API.rsvps, {
+        deviceId: getOrCreateId(RSVP_DEVICE_KEY, "rsvp"),
+        name,
+        attendance,
+      });
+      rsvps = Array.isArray(data.rsvps) ? data.rsvps : [];
+      setMyRsvp(data.myName || name);
+      renderRsvp();
+      if (attendance === "yes") burstConfetti();
+    } catch {
+      els.submit.disabled = false;
+      els.status.textContent = "Could not save RSVP. Is the server running?";
     }
   });
 
@@ -202,6 +244,103 @@
   });
 
   els.ultraClear.addEventListener("click", clearUltrasound);
+
+  /* ---------- Poll (SQLite via API) ---------- */
+  /** @type {{ votes: Array<{ id: string, team: "boy" | "girl", at: number }>, boy: number, girl: number, total: number }} */
+  let poll = { votes: [], boy: 0, girl: 0, total: 0 };
+
+  function getVoterId() {
+    return getOrCreateId(POLL_VOTER_KEY, "vote");
+  }
+
+  function myPollVote() {
+    const id = localStorage.getItem(POLL_VOTER_KEY);
+    if (!id) return null;
+    return poll.votes.find((v) => v.id === id) || null;
+  }
+
+  function renderPoll() {
+    if (!els.countBoy || !els.countGirl) return;
+
+    const boy = Number(poll.boy) || 0;
+    const girl = Number(poll.girl) || 0;
+    const total = Number(poll.total) || boy + girl;
+    const boyPct = total ? Math.round((boy / total) * 100) : 0;
+    const girlPct = total ? 100 - boyPct : 0;
+
+    els.countBoy.textContent = String(boy);
+    els.countGirl.textContent = String(girl);
+    els.pollTotal.textContent = String(total);
+    els.barBoy.style.width = `${boyPct}%`;
+    els.barGirl.style.width = `${girlPct}%`;
+
+    const mine = myPollVote();
+    const voted = Boolean(mine);
+
+    if (els.voteBoy) {
+      els.voteBoy.disabled = voted;
+      els.voteBoy.classList.toggle("is-selected", Boolean(mine && mine.team === "boy"));
+    }
+    if (els.voteGirl) {
+      els.voteGirl.disabled = voted;
+      els.voteGirl.classList.toggle("is-selected", Boolean(mine && mine.team === "girl"));
+    }
+
+    if (els.pollStatus && mine) {
+      els.pollStatus.textContent =
+        mine.team === "boy"
+          ? "You voted Team Boy."
+          : "You voted Team Girl.";
+    }
+  }
+
+  async function refreshPoll() {
+    const data = await apiGet(API.poll);
+    poll = {
+      votes: Array.isArray(data.votes) ? data.votes : [],
+      boy: Number(data.boy) || 0,
+      girl: Number(data.girl) || 0,
+      total: Number(data.total) || 0,
+    };
+    renderPoll();
+    return data;
+  }
+
+  async function castVote(team) {
+    if (team !== "boy" && team !== "girl") return;
+    if (myPollVote()) {
+      els.pollStatus.textContent = "You already voted on this device.";
+      return;
+    }
+
+    if (els.voteBoy) els.voteBoy.disabled = true;
+    if (els.voteGirl) els.voteGirl.disabled = true;
+    els.pollStatus.textContent = "Saving…";
+
+    try {
+      const data = await apiPost(API.poll, {
+        voterId: getVoterId(),
+        team,
+      });
+      poll = {
+        votes: Array.isArray(data.votes) ? data.votes : [],
+        boy: Number(data.boy) || 0,
+        girl: Number(data.girl) || 0,
+        total: Number(data.total) || 0,
+      };
+      renderPoll();
+      burstConfetti();
+      els.pollStatus.textContent =
+        team === "boy" ? "You voted Team Boy." : "You voted Team Girl.";
+    } catch {
+      if (els.voteBoy) els.voteBoy.disabled = false;
+      if (els.voteGirl) els.voteGirl.disabled = false;
+      els.pollStatus.textContent = "Could not save vote. Is the server running?";
+    }
+  }
+
+  if (els.voteBoy) els.voteBoy.addEventListener("click", () => castVote("boy"));
+  if (els.voteGirl) els.voteGirl.addEventListener("click", () => castVote("girl"));
 
   /* ---------- Confetti ---------- */
   const ctx = els.canvas.getContext("2d");
@@ -283,26 +422,24 @@
 
   document.querySelectorAll(".reveal").forEach((node) => observer.observe(node));
 
-  try {
-    const channel = new BroadcastChannel("little-bear-rsvp");
-    channel.onmessage = (event) => {
-      if (event.data && event.data.type === "sync" && Array.isArray(event.data.rsvps)) {
-        rsvps = event.data.rsvps;
-        renderRsvp();
-      }
-    };
-  } catch {
-    /* ignore */
-  }
-
-  window.addEventListener("storage", (event) => {
-    if (event.key === RSVP_KEY || event.key === MY_RSVP_KEY) {
-      rsvps = loadRsvps();
-      renderRsvp();
-    }
-    if (event.key === ULTRA_KEY) loadUltrasound();
-  });
-
   loadUltrasound();
   renderRsvp();
+  renderPoll();
+
+  refreshRsvps().catch(() => {
+    if (els.status && !getMyRsvp()) {
+      els.status.textContent = "RSVP database unavailable — start the server.";
+    }
+  });
+
+  refreshPoll().catch(() => {
+    if (els.pollStatus) {
+      els.pollStatus.textContent = "Poll database unavailable — start the server.";
+    }
+  });
+
+  window.setInterval(() => {
+    refreshPoll().catch(() => {});
+    refreshRsvps().catch(() => {});
+  }, 15000);
 })();

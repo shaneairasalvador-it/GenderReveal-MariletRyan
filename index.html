@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gender Reveal</title>
-  <meta name="description" content="Join us for a cozy gender reveal — McDonald's Marcos Highway, December 13, 2026." />
+  <meta name="description" content="Join us for a cozy gender reveal — McDonald's Marikina-Infanta, December 13, 2026." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
@@ -67,6 +67,7 @@
       <a href="#details">Details</a>
       <a href="#ultrasound">Ultrasound</a>
       <a href="#gifts">Gifts</a>
+      <a href="#poll">Poll</a>
       <a href="#rsvp">RSVP</a>
     </nav>
   </header>
@@ -105,7 +106,14 @@
       <div class="detail-grid">
         <article class="detail-item reveal">
           <h3>Location</h3>
-          <p>McDonald's Marcos Highway</p>
+          <p>
+            <a
+              class="map-link"
+              href="https://www.google.com/maps/place/McDonald's/@14.6207822,121.0990809,17.51z/data=!4m10!1m2!2m1!1smcdonalds+marcos+highway!3m6!1s0x3397b8478215b163:0x243a8364135be60d!8m2!3d14.6213126!4d121.1026302!15sChhtY2RvbmFsZHMgbWFyY29zIGhpZ2h3YXkiA4gBAVoaIhhtY2RvbmFsZHMgbWFyY29zIGhpZ2h3YXmSARRmYXN0X2Zvb2RfcmVzdGF1cmFudJoBJENoZERTVWhOTUc5blMwVkpRMEZuU1VOUE5sQmhhR2wzUlJBQuABAPoBBAgAEEw!16s%2Fg%2F1tvrx76h?entry=ttu&amp;g_ep=EgoyMDI2MTEyMi4wIKXMDSoASAFQAw%3D%3D"
+              target="_blank"
+              rel="noopener noreferrer"
+            >McDonald's Marikina-Infanta</a>
+          </p>
         </article>
         <article class="detail-item reveal">
           <h3>Date</h3>
@@ -220,6 +228,50 @@
       </div>
     </section>
 
+    <section id="poll" class="section poll">
+      <div class="section-head">
+        <h2>Team Boy or Team Girl?</h2>
+        <p>Cast your guess — every vote is saved so the tally stays accurate.</p>
+      </div>
+
+      <div class="poll-board reveal">
+        <div class="poll-actions">
+          <button type="button" class="team-btn team-boy" id="voteBoy" aria-describedby="pollStatus">
+            <span class="team-swatch boy-swatch" aria-hidden="true"></span>
+            <span class="team-label">Team Boy</span>
+          </button>
+          <button type="button" class="team-btn team-girl" id="voteGirl" aria-describedby="pollStatus">
+            <span class="team-swatch girl-swatch" aria-hidden="true"></span>
+            <span class="team-label">Team Girl</span>
+          </button>
+        </div>
+
+        <div class="poll-results" id="pollResults">
+          <div class="poll-row">
+            <div class="poll-row-top">
+              <span>Team Boy</span>
+              <strong id="countBoy">0</strong>
+            </div>
+            <div class="bar" aria-hidden="true">
+              <div class="bar-fill boy" id="barBoy"></div>
+            </div>
+          </div>
+          <div class="poll-row">
+            <div class="poll-row-top">
+              <span>Team Girl</span>
+              <strong id="countGirl">0</strong>
+            </div>
+            <div class="bar" aria-hidden="true">
+              <div class="bar-fill girl" id="barGirl"></div>
+            </div>
+          </div>
+          <p class="poll-total">Total guesses: <strong id="pollTotal">0</strong></p>
+        </div>
+
+        <p class="poll-status" id="pollStatus" aria-live="polite"></p>
+      </div>
+    </section>
+
     <section id="rsvp" class="section rsvp">
       <div class="section-head">
         <h2>RSVP</h2>
@@ -270,7 +322,15 @@
 
   <footer class="site-footer">
     <img src="assets/water-bear-blanket.jpg" alt="" width="64" height="64" class="footer-bear" />
-    <p>See you at Marcos Highway · Dec 13, 2026</p>
+    <p>
+      See you on
+      <a
+        class="map-link"
+        href="https://www.google.com/maps/place/McDonald's/@14.6207822,121.0990809,17.51z/data=!4m10!1m2!2m1!1smcdonalds+marcos+highway!3m6!1s0x3397b8478215b163:0x243a8364135be60d!8m2!3d14.6213126!4d121.1026302!15sChhtY2RvbmFsZHMgbWFyY29zIGhpZ2h3YXmSARRmYXN0X2Zvb2RfcmVzdGF1cmFudJoBJENoZERTVWhOTUc5blMwVkpRMEZuU1VOUE5sQmhhR2wzUlJBQuABAPoBBAgAEEw!16s%2Fg%2F1tvrx76h?entry=ttu&amp;g_ep=EgoyMDI2MTEyMi4wIKXMDSoASAFQAw%3D%3D"
+        target="_blank"
+        rel="noopener noreferrer"
+      >McDonald's Marikina-Infanta</a>
+    </p>
     <p class="footer-note">Can't wait to meet baby.</p>
   </footer>
   </div>
