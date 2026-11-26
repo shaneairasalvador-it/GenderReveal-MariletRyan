@@ -2,12 +2,15 @@
   "use strict";
 
   const API = {
+    health: "/api/health",
     poll: "/api/poll",
     rsvps: "/api/rsvps",
   };
   const MY_RSVP_KEY = "gender-reveal-my-rsvp-v2";
   const RSVP_DEVICE_KEY = "gender-reveal-rsvp-device-v2";
+  const RSVP_STORE_KEY = "gender-reveal-rsvp-store-v2";
   const POLL_VOTER_KEY = "gender-reveal-poll-voter-v2";
+  const POLL_STORE_KEY = "gender-reveal-poll-store-v2";
   const ULTRA_KEY = "little-bear-ultrasound-v1";
 
   const els = {
@@ -36,6 +39,9 @@
     pollTotal: document.getElementById("pollTotal"),
     pollStatus: document.getElementById("pollStatus"),
   };
+
+  /** @type {boolean | null} */
+  let apiOnline = null;
 
   function makeId(prefix) {
     if (typeof crypto !== "undefined" && crypto.randomUUID) {
@@ -70,6 +76,17 @@
       throw new Error(data.error || `POST ${url} failed`);
     }
     return data;
+  }
+
+  async function detectApi() {
+    if (apiOnline !== null) return apiOnline;
+    try {
+      const data = await apiGet(API.health);
+      apiOnline = Boolean(data && data.ok);
+    } catch {
+      apiOnline = false;
+    }
+    return apiOnline;
   }
 
   /* ---------- Envelope open ---------- */
@@ -108,8 +125,8 @@
     });
   }
 
-  /* ---------- RSVP (SQLite via API) ---------- */
-  /** @type {Array<{name: string, attendance: "yes" | "no", at: number}>} */
+  /* ---------- RSVP ---------- */
+  /** @type {Array<{name: string, attendance: "yes" | "no", at: number, deviceId?: string}>} */
   let rsvps = [];
 
   function getMyRsvp() {
@@ -118,6 +135,21 @@
 
   function setMyRsvp(name) {
     localStorage.setItem(MY_RSVP_KEY, name);
+  }
+
+  function loadLocalRsvps() {
+    try {
+      const raw = localStorage.getItem(RSVP_STORE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.slice(-60) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveLocalRsvps() {
+    localStorage.setItem(RSVP_STORE_KEY, JSON.stringify(rsvps.slice(-60)));
   }
 
   function renderRsvp() {
@@ -156,10 +188,14 @@
   }
 
   async function refreshRsvps() {
-    const data = await apiGet(API.rsvps);
-    rsvps = Array.isArray(data.rsvps) ? data.rsvps : [];
+    if (await detectApi()) {
+      const data = await apiGet(API.rsvps);
+      rsvps = Array.isArray(data.rsvps) ? data.rsvps : [];
+      saveLocalRsvps();
+    } else {
+      rsvps = loadLocalRsvps();
+    }
     renderRsvp();
-    return data;
   }
 
   els.form.addEventListener("submit", async (event) => {
@@ -180,22 +216,34 @@
     }
 
     const attendance = /** @type {"yes" | "no"} */ (attendanceInput.value);
+    const deviceId = getOrCreateId(RSVP_DEVICE_KEY, "rsvp");
     els.submit.disabled = true;
     els.status.textContent = "Saving…";
 
     try {
-      const data = await apiPost(API.rsvps, {
-        deviceId: getOrCreateId(RSVP_DEVICE_KEY, "rsvp"),
-        name,
-        attendance,
-      });
-      rsvps = Array.isArray(data.rsvps) ? data.rsvps : [];
-      setMyRsvp(data.myName || name);
+      if (await detectApi()) {
+        const data = await apiPost(API.rsvps, { deviceId, name, attendance });
+        rsvps = Array.isArray(data.rsvps) ? data.rsvps : [];
+        setMyRsvp(data.myName || name);
+      } else {
+        rsvps = loadLocalRsvps();
+        if (rsvps.some((r) => r.deviceId === deviceId)) {
+          setMyRsvp(name);
+        } else {
+          rsvps.push({ deviceId, name, attendance, at: Date.now() });
+          saveLocalRsvps();
+          setMyRsvp(name);
+        }
+      }
       renderRsvp();
       if (attendance === "yes") burstConfetti();
     } catch {
-      els.submit.disabled = false;
-      els.status.textContent = "Could not save RSVP. Is the server running?";
+      rsvps = loadLocalRsvps();
+      rsvps.push({ deviceId, name, attendance, at: Date.now() });
+      saveLocalRsvps();
+      setMyRsvp(name);
+      renderRsvp();
+      if (attendance === "yes") burstConfetti();
     }
   });
 
@@ -245,12 +293,34 @@
 
   els.ultraClear.addEventListener("click", clearUltrasound);
 
-  /* ---------- Poll (SQLite via API) ---------- */
+  /* ---------- Poll ---------- */
   /** @type {{ votes: Array<{ id: string, team: "boy" | "girl", at: number }>, boy: number, girl: number, total: number }} */
   let poll = { votes: [], boy: 0, girl: 0, total: 0 };
 
   function getVoterId() {
     return getOrCreateId(POLL_VOTER_KEY, "vote");
+  }
+
+  function tallyVotes(votes) {
+    const boy = votes.filter((v) => v.team === "boy").length;
+    const girl = votes.filter((v) => v.team === "girl").length;
+    return { votes, boy, girl, total: boy + girl };
+  }
+
+  function loadLocalPoll() {
+    try {
+      const raw = localStorage.getItem(POLL_STORE_KEY);
+      if (!raw) return tallyVotes([]);
+      const parsed = JSON.parse(raw);
+      const votes = Array.isArray(parsed.votes) ? parsed.votes : [];
+      return tallyVotes(votes);
+    } catch {
+      return tallyVotes([]);
+    }
+  }
+
+  function saveLocalPoll() {
+    localStorage.setItem(POLL_STORE_KEY, JSON.stringify({ votes: poll.votes }));
   }
 
   function myPollVote() {
@@ -288,22 +358,19 @@
 
     if (els.pollStatus && mine) {
       els.pollStatus.textContent =
-        mine.team === "boy"
-          ? "You voted Team Boy."
-          : "You voted Team Girl.";
+        mine.team === "boy" ? "You voted Team Boy." : "You voted Team Girl.";
     }
   }
 
   async function refreshPoll() {
-    const data = await apiGet(API.poll);
-    poll = {
-      votes: Array.isArray(data.votes) ? data.votes : [],
-      boy: Number(data.boy) || 0,
-      girl: Number(data.girl) || 0,
-      total: Number(data.total) || 0,
-    };
+    if (await detectApi()) {
+      const data = await apiGet(API.poll);
+      poll = tallyVotes(Array.isArray(data.votes) ? data.votes : []);
+      saveLocalPoll();
+    } else {
+      poll = loadLocalPoll();
+    }
     renderPoll();
-    return data;
   }
 
   async function castVote(team) {
@@ -317,25 +384,34 @@
     if (els.voteGirl) els.voteGirl.disabled = true;
     els.pollStatus.textContent = "Saving…";
 
+    const voterId = getVoterId();
+    const vote = { id: voterId, team, at: Date.now() };
+
     try {
-      const data = await apiPost(API.poll, {
-        voterId: getVoterId(),
-        team,
-      });
-      poll = {
-        votes: Array.isArray(data.votes) ? data.votes : [],
-        boy: Number(data.boy) || 0,
-        girl: Number(data.girl) || 0,
-        total: Number(data.total) || 0,
-      };
+      if (await detectApi()) {
+        const data = await apiPost(API.poll, { voterId, team });
+        poll = tallyVotes(Array.isArray(data.votes) ? data.votes : []);
+      } else {
+        poll = loadLocalPoll();
+        if (!poll.votes.some((v) => v.id === voterId)) {
+          poll = tallyVotes([...poll.votes, vote]);
+        }
+      }
+      saveLocalPoll();
       renderPoll();
       burstConfetti();
       els.pollStatus.textContent =
         team === "boy" ? "You voted Team Boy." : "You voted Team Girl.";
     } catch {
-      if (els.voteBoy) els.voteBoy.disabled = false;
-      if (els.voteGirl) els.voteGirl.disabled = false;
-      els.pollStatus.textContent = "Could not save vote. Is the server running?";
+      poll = loadLocalPoll();
+      if (!poll.votes.some((v) => v.id === voterId)) {
+        poll = tallyVotes([...poll.votes, vote]);
+      }
+      saveLocalPoll();
+      renderPoll();
+      burstConfetti();
+      els.pollStatus.textContent =
+        team === "boy" ? "You voted Team Boy." : "You voted Team Girl.";
     }
   }
 
@@ -423,23 +499,25 @@
   document.querySelectorAll(".reveal").forEach((node) => observer.observe(node));
 
   loadUltrasound();
+  rsvps = loadLocalRsvps();
+  poll = loadLocalPoll();
   renderRsvp();
   renderPoll();
 
   refreshRsvps().catch(() => {
-    if (els.status && !getMyRsvp()) {
-      els.status.textContent = "RSVP database unavailable — start the server.";
-    }
+    rsvps = loadLocalRsvps();
+    renderRsvp();
   });
 
   refreshPoll().catch(() => {
-    if (els.pollStatus) {
-      els.pollStatus.textContent = "Poll database unavailable — start the server.";
-    }
+    poll = loadLocalPoll();
+    renderPoll();
   });
 
   window.setInterval(() => {
-    refreshPoll().catch(() => {});
-    refreshRsvps().catch(() => {});
+    if (apiOnline) {
+      refreshPoll().catch(() => {});
+      refreshRsvps().catch(() => {});
+    }
   }, 15000);
 })();
